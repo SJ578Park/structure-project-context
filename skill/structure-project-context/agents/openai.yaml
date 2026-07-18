@@ -1,0 +1,4 @@
+interface:
+  display_name: "Structure Project Context"
+  short_description: "Scale project context with routed memory and history"
+  default_prompt: "Use $structure-project-context to initialize or migrate this repository’s agent context files."
