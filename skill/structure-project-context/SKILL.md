@@ -1,69 +1,49 @@
 ---
 name: structure-project-context
-description: Initialize, migrate, and validate scalable repository context for coding agents using a bounded session file, routed topic memory, monthly history, and optional ADRs. Use when setting up a new project’s session/memory/history convention, reorganizing growing root context files, reducing agent context-loading cost, or standardizing AGENTS.md and CLAUDE.md startup and handoff rules across repositories.
+description: Initialize, audit, migrate, and validate project session, memory, and history across coding agents. Use to standardize handoffs, split growing history, route memory by topic, or repair oversized context indexes while preserving existing records.
 ---
 
 # Structure Project Context
 
-Create a predictable entry point while loading only the context relevant to the current task.
+Keep the entry point small and load only context relevant to the task. Read [the context contract](references/project-context-contract.md) before changing a project's conventions.
 
 ## Workflow
 
-1. Read the repository instruction files and `git status` before changing anything.
-2. Detect the mode:
-   - New repository without context files: initialize.
-   - Repository with root `session.md`, `memory.md`, or `history.md`: migrate.
-   - Existing `docs/project-context/`: audit and repair.
-3. Read [references/project-context-contract.md](references/project-context-contract.md) before merging rules into existing `AGENTS.md` or `CLAUDE.md`.
-4. Use `scripts/context_structure.py` for deterministic scaffolding or validation.
-5. Perform the semantic work that a script cannot safely infer:
-   - Split long-term memory by stable project topics.
-   - Keep one fact in one topic file; do not duplicate it in the index.
-   - Preserve every historical entry and author exactly.
-   - Create an ADR only for decisions whose rationale and alternatives matter later.
-6. Update repository instructions so startup follows session → memory index routing → history index routing → `git status` → README.
-7. Update README links, validate, and report any remaining legacy files.
+1. Read project instructions, session, relevant memory, history index/latest entries, and Git status. Preserve unrelated and uncommitted work.
+2. Locate the authoritative context. Check root and `docs/`, case variants, `docs/project-context/`, and paths explicitly named by AGENTS/CLAUDE. Do not create a second source of truth.
+3. Choose the smallest useful change: compact files for small projects, topic memory when needed, monthly history when large. Memory and history can grow independently; retain working project-specific paths.
+4. Make the requested changes. Update AGENTS/CLAUDE, README, and active links together so the next agent follows the new paths.
+5. Validate the resulting layout. At handoff, replace stale session state, update relevant memory, append the dated history entry, and replace the latest index summary instead of accumulating summaries.
 
 ## Commands
 
-Initialize a new repository:
+Run scripts relative to this installed skill's actual directory; do not assume all machines use the same installation root.
 
 ```bash
-SKILL_DIR="${CODEX_HOME:-$HOME/.codex}/skills/structure-project-context"
-python3 "$SKILL_DIR/scripts/context_structure.py" init --project /path/to/repository
+python3 scripts/context_structure.py init --project /path/to/project --layout compact
+python3 scripts/context_structure.py init --project /path/to/project --layout routed
+python3 scripts/context_structure.py validate --project /path/to/project
 ```
 
-Create a safe mechanical migration draft from legacy root files:
+`validate` recognizes canonical routed context and compact/hybrid root or `docs/` layouts, including uppercase filenames and `project-standards.md` as memory. `--history-only` validates a bounded history-only cleanup without claiming unrelated memory/session work is complete. Other established layouts need equivalent manual checks; do not rename working paths solely to satisfy the validator.
+
+For history-only migration:
 
 ```bash
-SKILL_DIR="${CODEX_HOME:-$HOME/.codex}/skills/structure-project-context"
-python3 "$SKILL_DIR/scripts/context_structure.py" migrate --project /path/to/repository
+python3 scripts/history_archive.py split --source /path/to/project/docs/HISTORY.md --destination /path/to/project/docs/history
+python3 scripts/history_archive.py verify /path/to/project/docs/history/.migration-proof.json
 ```
 
-The migration command intentionally leaves root legacy files in place. After semantic splitting, instruction updates, and validation, remove them explicitly:
+The splitter retains the source, preserves dated entries and authors, sorts dates newest first, preserves undated sections separately, and writes a source-reconstruction proof. Review the draft and update the index before removing the superseded source. New archive-relative links are recorded reversibly in the proof. Unsupported link/date formats require explicit review, not silent omission.
 
-```bash
-SKILL_DIR="${CODEX_HOME:-$HOME/.codex}/skills/structure-project-context"
-python3 "$SKILL_DIR/scripts/context_structure.py" validate --project /path/to/repository
-```
+`context_structure.py migrate` creates a full routed migration draft from root or `docs/` sources. It leaves memory in `memory/legacy.md` for semantic topic routing. Do not use a full migration when only history needs splitting.
 
-Run validation again after deleting root legacy files. Never delete the legacy sources before checking that session content and all history entries were preserved.
+## Essential rules
 
-## Required end state
-
-- Keep `AGENTS.md` at the repository root as the stable discovery point.
-- Keep `docs/project-context/session.md` at 60 lines or fewer.
-- Make `memory/index.md` a router, not a second memory document.
-- Keep current principles in topic memory files; keep chronology only in history.
-- Make `history/index.md` contain the current log link and only a compact latest summary.
-- Store detailed history in `history/YYYY/YYYY-MM.md`, newest entry first.
-- Search old history with `rg` before opening archive files.
-- Preserve user changes, author names, secrets policy, and existing repository-specific rules.
-
-## Safety
-
-- Do not commit or push unless the user asks.
-- Do not overwrite existing context destinations silently.
-- Do not convert historical facts into current memory merely because they appear important.
-- Do not leave `memory/legacy.md` as the final migration result; route its durable content into topics.
-- If instruction files conflict, preserve the stricter repository rule and explain the merge.
+- Session is current state; memory is current reusable knowledge; history is dated work; ADRs preserve decision rationale.
+- Use the contract's size budgets at handoff. Keep history index at most 3 latest dated summaries, 60 lines, and 8 KiB. Replace old summaries; do not prepend forever.
+- Before compacting an existing oversized index, preserve unique summary content in history. If equivalence with monthly entries is uncertain, keep a clearly marked archive copy, link it, and verify exact preservation.
+- Split memory by meaning, never by date or arbitrary slices. Size warnings request semantic review and do not authorize changing unrelated product principles.
+- Historical wording and authorship remain intact. Do not treat old "pending" notes as current facts without verification.
+- Back up sources outside the active context; verify every original fragment before removing superseded files. Never silently overwrite destinations.
+- Preserve project-specific security and publishing rules. Do not commit or push without existing user authorization.
