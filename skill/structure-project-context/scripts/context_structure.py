@@ -251,10 +251,10 @@ def main() -> int:
                     (docs / name).write_text(body)
             if not (project / "AGENTS.md").exists():
                 (project / "AGENTS.md").write_text(
-                    "# Agent Guide\n\nRead docs/session.md, relevant docs/memory.md sections, then recent docs/history.md entries.\n"
-                    "Keep session at most 60 lines. Replace current state; append dated work to history.\n"
+                    "# Agent Guide\n\nUse docs/session.md when resuming substantive work, docs/memory.md for relevant principles, and docs/history.md when earlier work matters.\n"
+                    "Update context when current state, durable knowledge or meaningful work changes. Keep session at most 60 lines; trivial edits and read-only questions need no log by default.\n"
                     "Split history by month above 300 lines or 32 KiB. Review memory for topic splitting above 200 lines or 24 KiB.\n"
-                    "Validate context at handoff with the structure-project-context skill when available.\n")
+                    "Validate after structure, routing or substantial context changes with the structure-project-context skill when available; for isolated wording fixes, check affected text and links.\n")
         else:
             scaffold(project)
         print(f"Project context initialized ({args.layout})")

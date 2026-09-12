@@ -12,7 +12,5 @@
 
 ## Reading rule
 
-- Read this summary first. Open the current log only for details.
-- Search older logs with `rg` before opening an archive.
-
-At handoff, validate project context with the installed structure-project-context skill when available. Keep history index at most 3 dated summaries, 60 lines and 8 KiB; archive older summaries rather than accumulating them.
+- Use this summary when earlier work is relevant; search logs before opening matching entries.
+- When updating this index, replace latest summaries: maximum 3 dated summaries, 60 lines and 8 KiB. Preserve unique older content in history and check bounds/links after editing.
