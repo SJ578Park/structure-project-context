@@ -1,49 +1,24 @@
 ---
 name: structure-project-context
-description: Initialize, audit, migrate, and validate project session, memory, and history across coding agents. Use to standardize handoffs, split growing history, route memory by topic, or repair oversized context indexes while preserving existing records.
+description: Organize project session, memory, and history. Use when setting up handoffs, splitting growing context files, or auditing their routing and size.
 ---
 
 # Structure Project Context
 
-Keep the entry point small and load only context relevant to the task. Read [the context contract](references/project-context-contract.md) before changing a project's conventions.
+Keep current state easy to find, reusable knowledge grouped by topic, and dated work searchable without loading the whole archive.
 
-## Workflow
+## Choose the relevant route
 
-1. Read project instructions, session, relevant memory, history index/latest entries, and Git status. Preserve unrelated and uncommitted work.
-2. Locate the authoritative context. Check root and `docs/`, case variants, `docs/project-context/`, and paths explicitly named by AGENTS/CLAUDE. Do not create a second source of truth.
-3. Choose the smallest useful change: compact files for small projects, topic memory when needed, monthly history when large. Memory and history can grow independently; retain working project-specific paths.
-4. Make the requested changes. Update AGENTS/CLAUDE, README, and active links together so the next agent follows the new paths.
-5. Validate the resulting layout. At handoff, replace stale session state, update relevant memory, append the dated history entry, and replace the latest index summary instead of accumulating summaries.
+- **Audit or routine context update:** use [the context contract](references/project-context-contract.md) for layouts, responsibility boundaries and size checks. An audit reports findings without rewriting files unless requested.
+- **Initialize or reorganize existing files:** use the contract to choose a compact, hybrid or routed layout, then read [migration and commands](references/migration.md). Move only the part that needs it; a history cleanup does not require splitting memory.
+- Ordinary implementation, typo fixes and factual questions do not require this skill unless they change the context convention or the user invokes it.
 
-## Commands
+Use the project's own instructions to locate authoritative context. Read only the session, topics or history needed to understand the requested change. Retain working paths and independently sized memory/history; avoid imposing a new structure merely to match an example or validator.
 
-Run scripts relative to this installed skill's actual directory; do not assume all machines use the same installation root.
+## Completion and boundaries
 
-```bash
-python3 scripts/context_structure.py init --project /path/to/project --layout compact
-python3 scripts/context_structure.py init --project /path/to/project --layout routed
-python3 scripts/context_structure.py validate --project /path/to/project
-```
+A repair is complete when the requested changes and active routing agree, relevant checks pass, and any moved history is proven preserved. Continue through verification and already-authorized installation or synchronization; an initial draft alone is not completion.
 
-`validate` recognizes canonical routed context and compact/hybrid root or `docs/` layouts, including uppercase filenames and `project-standards.md` as memory. `--history-only` validates a bounded history-only cleanup without claiming unrelated memory/session work is complete. Other established layouts need equivalent manual checks; do not rename working paths solely to satisfy the validator.
+Preserve historical wording, authorship and unrelated work. Before retiring a source, verify the migration and check for concurrent edits. If a helper cannot handle the format, use an equivalent verifiable transformation rather than dropping content or treating the helper limitation as a permission gate.
 
-For history-only migration:
-
-```bash
-python3 scripts/history_archive.py split --source /path/to/project/docs/HISTORY.md --destination /path/to/project/docs/history
-python3 scripts/history_archive.py verify /path/to/project/docs/history/.migration-proof.json
-```
-
-The splitter retains the source, preserves dated entries and authors, sorts dates newest first, preserves undated sections separately, and writes a source-reconstruction proof. Review the draft and update the index before removing the superseded source. New archive-relative links are recorded reversibly in the proof. Unsupported link/date formats require explicit review, not silent omission.
-
-`context_structure.py migrate` creates a full routed migration draft from root or `docs/` sources. It leaves memory in `memory/legacy.md` for semantic topic routing. Do not use a full migration when only history needs splitting.
-
-## Essential rules
-
-- Session is current state; memory is current reusable knowledge; history is dated work; ADRs preserve decision rationale.
-- Use the contract's size budgets at handoff. Keep history index at most 3 latest dated summaries, 60 lines, and 8 KiB. Replace old summaries; do not prepend forever.
-- Before compacting an existing oversized index, preserve unique summary content in history. If equivalence with monthly entries is uncertain, keep a clearly marked archive copy, link it, and verify exact preservation.
-- Split memory by meaning, never by date or arbitrary slices. Size warnings request semantic review and do not authorize changing unrelated product principles.
-- Historical wording and authorship remain intact. Do not treat old "pending" notes as current facts without verification.
-- Back up sources outside the active context; verify every original fragment before removing superseded files. Never silently overwrite destinations.
-- Preserve project-specific security and publishing rules. Do not commit or push without existing user authorization.
+User instructions and authorization in the current session take precedence over this skill's defaults. Keep scope to the requested projects and operations; changing documentation does not authorize production actions. Ask only when necessary information or authority is actually missing.

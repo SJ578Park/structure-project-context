@@ -1,21 +1,18 @@
-# AGENTS.md
+# Project Context
 
-## Start work
+## Find relevant context
 
-1. Read `docs/project-context/session.md` first.
-2. Use `docs/project-context/memory/index.md` to select only relevant memory topics.
-3. Read the latest summary in `docs/project-context/history/index.md`; open monthly logs only when needed and search old logs with `rg` first.
-4. Run `git status` and preserve unrelated changes.
-5. Follow README for execution and verification.
+- `docs/project-context/session.md`: current state, blockers and next actions when resuming substantive work.
+- `docs/project-context/memory/index.md`: route to the topics relevant to the change.
+- `docs/project-context/history/index.md`: earlier work and verification when needed; search logs before opening matching entries.
+- README: execution and verification commands when needed.
 
-## Finish work
+An isolated typo or mechanical edit does not require reading the whole context stack.
 
-1. Run proportional validation.
-2. Refresh session and keep it at or below 60 lines.
-3. Update only relevant memory topics; add an ADR for durable decisions.
-4. Add a dated entry to the current monthly history log.
-5. Replace the latest summary in history index; keep at most 3 dated summaries, 60 lines and 8 KiB.
+## Keep handoffs useful
 
-Current state wins from session, current principles from memory, rationale from ADRs, and past facts from history.
+Update context when work changes what the next contributor needs to know. Put current state in session (at most 60 lines), durable knowledge in relevant memory topics, decision rationale in optional ADRs, and meaningful dated work in monthly history. Read-only questions and trivial edits need no log entry by default.
 
-At handoff, validate project context with the installed structure-project-context skill when available; otherwise check the bounds and links manually. Preserve unique older summaries in history before replacing them.
+When writing history, preserve prior records and replace the index's latest summary block: at most 3 dated summaries, 60 lines and 8 KiB. Preserve older unique content before shortening the index.
+
+Validate after structure, routing, index or substantial context changes using the installed structure-project-context skill; otherwise check affected text/links. Once relevant checks pass, avoid repeating them without a new change or unresolved concern.

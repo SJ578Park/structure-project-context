@@ -49,7 +49,7 @@ docs/project-context/
     └── NNNN-<decision>.md
 ```
 
-The startup contract always reads session first, then uses indexes to load only relevant memory and history. Migration copies legacy content before deletion and requires semantic memory routing before validation passes.
+The reading contract uses session when current state matters, topic indexes for relevant memory, and history only when earlier work is needed. Migration copies legacy content before deletion and requires semantic memory routing before validation passes.
 
 ## Direct commands
 
@@ -71,7 +71,7 @@ Small projects can start with `init --layout compact`; the existing `init` defau
 - Split single history above 300 lines or 32 KiB into `history/YYYY/YYYY-MM.md`.
 - Keep history index at most 3 latest dated summaries, 60 lines and 8 KiB; replace the summary block at handoff.
 - Review memory above 200 lines or 24 KiB for semantic topic splitting. This is reported as a warning, separately from history failures.
-- Run context validation at handoff; global installation does not automatically update each project's AGENTS/CLAUDE rules.
+- Validate after structure, routing, index or substantial context changes; an isolated typo only needs the relevant text/link check. Global installation does not automatically update project AGENTS/CLAUDE rules.
 
 History-only migration retains the original and includes a source-reconstruction proof:
 
@@ -88,6 +88,11 @@ Review the new index, update active links and instructions, verify the proof, an
 ```bash
 python3 -m unittest discover -s tests -v
 ```
+
+
+## Prompt design
+
+The skill entry point routes to the contract or migration guidance only when relevant. It keeps task scope, preservation and completion criteria explicit without requiring a full document stack or repeated tests for every edit. History size limits remain unchanged because they address observed index growth. This revision follows [OpenAI's guidance on rethinking skills and prompts](https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra).
 
 ## License
 

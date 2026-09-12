@@ -10,5 +10,5 @@ Read only the topic documents relevant to the current task.
 ## Maintenance
 
 - Store only current reusable knowledge here.
-- Add stable topic files as the project grows; prefer 4–8 topics.
+- Add or split a topic when it improves retrieval; keep a small memory together when that is sufficient.
 - Keep chronology in history and avoid duplicating topic prose in this index.

@@ -44,23 +44,16 @@ Memory review warnings are separate from validation failures so a history-only t
 
 Monthly history is an archive, not startup context. It may exceed the single-history budget. If finding an entry becomes cumbersome (for example over 1,000 lines or 128 KiB), consider day/week files with a month router. Use actual retrieval needs, preserve entries, and keep the top-level index bounded. Old month links can be grouped into year indexes when the top-level router grows.
 
-## Startup and handoff
+## Reading and handoff by task
 
-1. Always read session.
-2. Read memory index and relevant topics, or relevant sections of a small memory file.
-3. Read history index/latest compact summary. Search archives with `rg` before opening only relevant entries; do not read every monthly log.
-4. Read Git status and README for execution/verification. Preserve other work.
-5. At handoff, run proportional validation, refresh current session and relevant memory, and append a newest-first dated entry to the current monthly history.
-6. Replace the latest summary block, retaining at most 3 short summaries. Refresh the current-log link. Month rollover follows actual work dates; an inactive project does not need empty logs every month.
-7. Run the installed `context_structure.py validate --project ...` when available. Otherwise check these budgets, routing and links manually. Installation alone does not change project instructions; keep this handoff rule in AGENTS/CLAUDE.
+Use session when resuming substantive work or when current state could affect the task. Use memory for the relevant domain/principles, and history only when earlier work or evidence is needed. Search old logs before opening matching entries. A local typo or isolated mechanical edit does not need a full document stack or repository map.
 
-## Migration and preservation
+Update context when the work changes what the next contributor needs to know: current state/blockers in session, changed durable knowledge in memory, and meaningful work/validation in history. Read-only questions and trivial edits need no ceremonial log entry unless the project or user specifically requires one.
 
-- Read existing instructions before changing paths. Detect both root and `docs/` sources and case variants. Ambiguous duplicate sources require explicit resolution.
-- Copy first, verify, remove superseded sources last. Preserve dirty working-tree content, not merely the committed version.
-- Preserve every historical entry, undated section, preamble and author. Never silently drop text that does not match a date parser.
-- Split memory semantically; do not retain `memory/legacy.md` as the final routed state.
-- Preserve index-only information before compacting it. If uniqueness is uncertain, archive the entire old index alongside the new one with a dated name, retain its relative link base, and mark it as historical summaries rather than an active router.
-- For a moved history document, update active callers and rebase relative Markdown links. Historical prose mentioning old paths remains historical, not a live write instruction.
-- The split helper's proof reconstructs the original source from exact fragments; re-check after final edits. New entries should not modify historical fragments.
-- Do not create pointer stubs at old paths unless an actual external caller requires compatibility. Do not rewrite unrelated instructions or historical facts while repairing routing.
+When writing history, add a newest-first dated entry and replace the index's latest summary block within the stated limits. Month rollover follows actual work dates; inactive projects do not need empty monthly logs. Preserve older unique summary text before compacting it.
+
+Run context validation after changes to structure, routing, indexes or substantial context content. For an isolated wording fix, checking the edited text and affected links is sufficient. Re-run after a relevant correction; do not repeat an unchanged passing check. A history-only result must not be presented as a full-context pass.
+
+Project instructions should route agents to documents by relevance and define these update conditions. A global skill installation does not automatically change each project's AGENTS/CLAUDE rules. These rules work across coding models; they do not relax project-specific security, authorship or deployment boundaries.
+
+For commands or content movement, read [migration and preservation](migration.md) only when needed.
